@@ -37,14 +37,15 @@ import { MoonStarIcon } from 'lucide-react-native';
 import * as React from 'react';
 import { View, ScrollView } from 'react-native';
 import { useNotification } from '@/contexts/notificationContext';
+import { useDisclosure } from '@/hooks/useDisclosure';
 
 export default function Screen() {
   const [isChecked, setIsChecked] = React.useState(false);
   const [radioValue, setRadioValue] = React.useState('one');
   const [isSwitched, setIsSwitched] = React.useState(false);
   const [progress, setProgress] = React.useState(13);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const { showToast, showAlert } = useNotification();
+  const modal = useDisclosure();
 
   React.useEffect(() => {
     const timer = setTimeout(() => setProgress(66), 500);
@@ -179,20 +180,20 @@ export default function Screen() {
 
           <View className="gap-4">
             <Text variant="h3">Modal</Text>
-            <Button onPress={() => setIsModalOpen(true)}>
+            <Button onPress={modal.open}>
               <Text>Open Modal</Text>
             </Button>
             <Modal
-              visible={isModalOpen}
+              visible={modal.isOpen}
               transparent
               animationType="fade"
-              onRequestClose={() => setIsModalOpen(false)}>
+              onRequestClose={modal.close}>
               <ModalContent>
                 <ModalView>
                   <Text variant="h3">Modal Title</Text>
                   <Text>This is the modal content.</Text>
                   <View className="mt-4 flex-row gap-2">
-                    <Button variant="outline" onPress={() => setIsModalOpen(false)}>
+                    <Button variant="outline" onPress={modal.close}>
                       <Text>Close</Text>
                     </Button>
                     <Button

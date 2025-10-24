@@ -1,6 +1,6 @@
 const { hairlineWidth } = require('nativewind/theme');
+const { semantic } = require('./lib/tokens');
 
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
   content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
@@ -42,11 +42,12 @@ module.exports = {
           foreground: 'hsl(var(--card-foreground))',
         },
       },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
+      borderRadius: semantic.radii,
+      spacing: semantic.spacing,
+      fontSize: semantic.typography.fontSizes,
+      fontWeight: semantic.typography.fontWeights,
+      boxShadow: semantic.elevation,
+      transitionDuration: semantic.duration,
       borderWidth: {
         hairline: hairlineWidth(),
       },
