@@ -1,7 +1,10 @@
+import React, { forwardRef } from 'react';
+import { Platform, Pressable, View } from 'react-native';
+import { Text } from '@/components/ui/text';
 import { TextClassContext } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { Platform, Pressable } from 'react-native';
+
 
 const buttonVariants = cva(
   cn(
@@ -88,21 +91,35 @@ const buttonTextVariants = cva(
   }
 );
 
-type ButtonProps = React.ComponentProps<typeof Pressable> &
-  React.RefAttributes<typeof Pressable> &
-  VariantProps<typeof buttonVariants>;
 
-function Button({ className, variant, size, ...props }: ButtonProps) {
-  return (
-    <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
-      <Pressable
-        className={cn(props.disabled && 'opacity-50', buttonVariants({ variant, size }), className)}
-        role="button"
-        {...props}
-      />
-    </TextClassContext.Provider>
-  );
-}
+type ButtonProps = Omit<React.ComponentProps<typeof Pressable>, 'children'> &
+  VariantProps<typeof buttonVariants> & {
+    children?: React.ReactNode;
+  };
+
+const Button = forwardRef<View, ButtonProps>(
+  ({ className, variant, size, disabled, children, ...props }, ref) => {
+    const content =
+      typeof children === 'string' || typeof children === 'number' ? (
+        <Text>{children}</Text>
+      ) : (
+        children
+      );
+
+    return (
+      <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
+        <Pressable
+          ref={ref}
+          accessibilityRole="button"
+          className={cn(disabled && 'opacity-50', buttonVariants({ variant, size }), className)}
+          disabled={disabled}
+          {...props}>
+          {content}
+        </Pressable>
+      </TextClassContext.Provider>
+    );
+  }
+);
 
 export { Button, buttonTextVariants, buttonVariants };
 export type { ButtonProps };
