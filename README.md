@@ -28,7 +28,7 @@ chad/
 │     └─ index.ts
 ├─ contexts/
 │  ├─ authContext.tsx
-│  └─ notificationProvider.tsx
+│  └─ notificationContext.tsx
 ├─ lib/
 │  ├─ theme.ts
 │  └─ utils.ts

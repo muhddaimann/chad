@@ -17,13 +17,6 @@ import {
   TextInput,
 } from '@/components/ui';
 import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogView,
   Card,
   CardContent,
   CardDescription,
@@ -38,12 +31,12 @@ import {
   ModalContent,
   ModalView,
   Skeleton,
-  Toast,
 } from '@/components/uii';
 import { Stack } from 'expo-router';
 import { MoonStarIcon } from 'lucide-react-native';
 import * as React from 'react';
 import { View, ScrollView } from 'react-native';
+import { useNotification } from '@/contexts/notificationContext';
 
 export default function Screen() {
   const [isChecked, setIsChecked] = React.useState(false);
@@ -51,7 +44,7 @@ export default function Screen() {
   const [isSwitched, setIsSwitched] = React.useState(false);
   const [progress, setProgress] = React.useState(13);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [isAlertOpen, setIsAlertOpen] = React.useState(false);
+  const { showToast, showAlert } = useNotification();
 
   React.useEffect(() => {
     const timer = setTimeout(() => setProgress(66), 500);
@@ -64,18 +57,21 @@ export default function Screen() {
       <ScrollView contentContainerClassName="p-4">
         <View className="flex-1 items-start justify-start gap-8 p-4">
           <Text variant="h1">Components Demo</Text>
-
           <Text variant="h2">UI Components</Text>
 
           <View className="gap-4">
             <Text variant="h3">Button</Text>
             <View className="flex-row gap-2">
-              <Button>Default</Button>
-              <Button variant="secondary">Secondary</Button>
-              <Button variant="destructive">Destructive</Button>
-              <Button variant="outline">Outline</Button>
-              <Button variant="ghost">Ghost</Button>
-              <Button variant="link">Link</Button>
+              <Button onPress={() => showToast('Default Toast')}>Default</Button>
+              <Button variant="secondary" onPress={() => showToast('Success Toast', 'success')}>
+                Secondary
+              </Button>
+              <Button variant="destructive" onPress={() => showToast('Error Toast', 'error')}>
+                Destructive
+              </Button>
+              <Button variant="outline" onPress={() => showToast('Warning Toast', 'warning')}>
+                Outline
+              </Button>
             </View>
           </View>
 
@@ -174,18 +170,18 @@ export default function Screen() {
                 <Text>Card Content</Text>
               </CardContent>
               <CardFooter>
-                <Text>Card Footer</Text>
+                <Button onPress={() => showToast('Card Action Done', 'success')}>
+                  <Text>Do Action</Text>
+                </Button>
               </CardFooter>
             </Card>
           </View>
 
           <View className="gap-4">
             <Text variant="h3">Modal</Text>
-
             <Button onPress={() => setIsModalOpen(true)}>
               <Text>Open Modal</Text>
             </Button>
-
             <Modal
               visible={isModalOpen}
               transparent
@@ -195,12 +191,17 @@ export default function Screen() {
                 <ModalView>
                   <Text variant="h3">Modal Title</Text>
                   <Text>This is the modal content.</Text>
-
                   <View className="mt-4 flex-row gap-2">
                     <Button variant="outline" onPress={() => setIsModalOpen(false)}>
                       <Text>Close</Text>
                     </Button>
-                    <Button onPress={() => setIsAlertOpen(true)}>
+                    <Button
+                      onPress={() =>
+                        showAlert(
+                          'Are you absolutely sure?',
+                          'This action cannot be undone. This will permanently delete your account and remove your data from our servers.'
+                        )
+                      }>
                       <Text>Open Alert</Text>
                     </Button>
                   </View>
@@ -211,39 +212,16 @@ export default function Screen() {
 
           <View className="gap-4">
             <Text variant="h3">AlertDialog</Text>
-            <Button onPress={() => setIsAlertOpen(true)}>
-              <Text>Open Alert</Text>
+            <Button onPress={() => showAlert('Delete item?', 'This cannot be undone. Continue?')}>
+              <Text>Show Alert</Text>
             </Button>
-            <AlertDialog
-              visible={isAlertOpen}
-              transparent={true}
-              animationType="fade"
-              onRequestClose={() => setIsAlertOpen(false)}>
-              <AlertDialogContent>
-                <AlertDialogView>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete your account and
-                      remove your data from our servers.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <Button variant="outline" onPress={() => setIsAlertOpen(false)}>
-                      <Text>Cancel</Text>
-                    </Button>
-                    <Button variant="destructive" onPress={() => setIsAlertOpen(false)}>
-                      <Text>Continue</Text>
-                    </Button>
-                  </AlertDialogFooter>
-                </AlertDialogView>
-              </AlertDialogContent>
-            </AlertDialog>
           </View>
 
           <View className="gap-4">
-            <Text variant="h3">Toast (Placeholder)</Text>
-            <Toast />
+            <Text variant="h3">Toast</Text>
+            <Button onPress={() => showToast('Item saved successfully!', 'success')}>
+              <Text>Show Toast</Text>
+            </Button>
           </View>
 
           <View className="gap-4">
